@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.11.4 on win32)" generated="20230908 15:01:00.875" rpa="false" schemaversion="4">
+<suite id="s1" name="Tests" source="C:\Users\hp\Documents\test-auto\notre_api\Tests">
+<suite id="s1-s1" name="Api" source="C:\Users\hp\Documents\test-auto\notre_api\Tests\api.robot">
+<test id="s1-s1-t1" name="Supprimer Utilisateur" line="20">
+<kw name="Supprimer Utilisateur de la BD" library="loginBack">
+<kw name="Connect To Database Using Custom Params" library="DatabaseLibrary">
+<arg>pymysql</arg>
+<arg>database='demo', user='root', password='', host='localhost'</arg>
+<doc>Loads the DB API 2.0 module given `dbapiModuleName` then uses it to
+connect to the database using the map string `db_connect_string`
+(parsed as a list of named arguments).</doc>
+<msg timestamp="20230908 15:01:01.382" level="INFO">Executing : Connect To Database Using Custom Params : pymysql.connect(db_api_2.connect(database='demo', user='root', password=***, host='localhost')) </msg>
+<status status="PASS" starttime="20230908 15:01:01.362" endtime="20230908 15:01:01.392"/>
+</kw>
+<kw name="Execute Sql String" library="DatabaseLibrary">
+<arg>DELETE FROM users WHERE username = '${USERNAME}' and password = md5('${PASSWORD}')</arg>
+<doc>Executes the sqlString as SQL commands. Useful to pass arguments to your sql. Set optional input `sansTran` to
+True to run command without an explicit transaction commit or rollback.</doc>
+<msg timestamp="20230908 15:01:01.392" level="INFO">Executing : Execute SQL String  |  DELETE FROM users WHERE username = 'test' and password = md5('1234') </msg>
+<status status="PASS" starttime="20230908 15:01:01.392" endtime="20230908 15:01:01.402"/>
+</kw>
+<kw name="Disconnect From Database" library="DatabaseLibrary">
+<doc>Disconnects from the database.
+By default it's not an error if there was no open database connection -
+suitable for usage as a teardown.
+However you can enforce it using the `error_if_no_connection` parameter.</doc>
+<msg timestamp="20230908 15:01:01.402" level="INFO">Executing : Disconnect From Database</msg>
+<status status="PASS" starttime="20230908 15:01:01.402" endtime="20230908 15:01:01.402"/>
+</kw>
+<status status="PASS" starttime="20230908 15:01:01.362" endtime="20230908 15:01:01.402"/>
+</kw>
+<kw name="Authentifier utilisateur inexistant dans l'application" library="loginBack">
+<kw name="Create Session" library="RequestsLibrary">
+<arg>session4</arg>
+<arg>${WEBSITE_LINK}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20230908 15:01:01.402" level="INFO">Creating Session using : alias=session4, url=http://localhost:8080/demo/api/user, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20230908 15:01:01.402" endtime="20230908 15:01:01.402"/>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<var>${response}</var>
+<arg>session4</arg>
+<arg>login.php?username=${USERNAME}&amp;password=${PASSWORD}</arg>
+<doc>*DEPRECATED* Please use `GET On Session` instead.</doc>
+<msg timestamp="20230908 15:01:01.402" level="WARN">Keyword 'RequestsLibrary.Get Request' is deprecated. Please use `GET On Session` instead.</msg>
+<msg timestamp="20230908 15:01:01.417" level="INFO">GET Request : url=http://localhost:8080/demo/api/user/login.php?username=test&amp;password=1234 
+ path_url=/demo/api/user/login.php?username=test&amp;password=1234 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg timestamp="20230908 15:01:01.417" level="INFO">GET Response : url=http://localhost:8080/demo/api/user/login.php?username=test&amp;password=1234 
+ status=200, reason=OK 
+ headers={'Date': 'Fri, 08 Sep 2023 13:01:01 GMT', 'Server': 'Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.0.28', 'X-Powered-By': 'PHP/8.0.28', 'Content-Length': '58', 'Keep-Alive': 'timeout=5, max=100', 'Connection': 'Keep-Alive', 'Content-Type': 'text/html; charset=UTF-8'} 
+ body={"status":false,"message":"Invalid Username or Password!"} 
+ </msg>
+<msg timestamp="20230908 15:01:01.417" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20230908 15:01:01.402" endtime="20230908 15:01:01.417"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20230908 15:01:01.417" level="INFO">${json} = {'status': False, 'message': 'Invalid Username or Password!'}</msg>
+<status status="PASS" starttime="20230908 15:01:01.417" endtime="20230908 15:01:01.417"/>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<msg timestamp="20230908 15:01:01.422" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<status status="PASS" starttime="20230908 15:01:01.417" endtime="20230908 15:01:01.422"/>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${json['message']}</arg>
+<arg>Invalid Username or Password!</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" starttime="20230908 15:01:01.422" endtime="20230908 15:01:01.422"/>
+</kw>
+<status status="PASS" starttime="20230908 15:01:01.402" endtime="20230908 15:01:01.422"/>
+</kw>
+<tag>Third</tag>
+<status status="PASS" starttime="20230908 15:01:01.357" endtime="20230908 15:01:01.422"/>
+</test>
+<status status="PASS" starttime="20230908 15:01:00.915" endtime="20230908 15:01:01.427"/>
+</suite>
+<status status="PASS" starttime="20230908 15:01:00.880" endtime="20230908 15:01:01.427"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">Third</stat>
+</tag>
+<suite>
+<stat pass="1" fail="0" skip="0" id="s1" name="Tests">Tests</stat>
+<stat pass="1" fail="0" skip="0" id="s1-s1" name="Api">Tests.Api</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20230908 15:01:01.402" level="WARN">Keyword 'RequestsLibrary.Get Request' is deprecated. Please use `GET On Session` instead.</msg>
+</errors>
+</robot>
